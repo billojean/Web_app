@@ -25,6 +25,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -165,34 +166,35 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\itemsController.cs" />
-    <Compile Include="Controllers\items_historyController.cs" />
+    <Compile Include="Controllers\ItemsController.cs" />
+    <Compile Include="Controllers\Items_historyController.cs" />
     <Compile Include="Controllers\LaptopsController.cs" />
-    <Compile Include="Controllers\locationsController.cs" />
-    <Compile Include="Controllers\location_historyController.cs" />
+    <Compile Include="Controllers\LocationsController.cs" />
+    <Compile Include="Controllers\Location_historyController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\SparePartsController.cs" />
-    <Compile Include="Controllers\teamsController.cs" />
-    <Compile Include="Controllers\t_membersController.cs" />
-    <Compile Include="Controllers\userController.cs" />
-    <Compile Include="Controllers\usersController.cs" />
+    <Compile Include="Controllers\TeamsController.cs" />
+    <Compile Include="Controllers\T_membersController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Controllers\VehiclesController.cs" />
+    <Compile Include="DBA\CoTeamsRepository.cs" />
     <Compile Include="DBA\DataContext.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Departments.cs" />
-    <Compile Include="Models\items.cs" />
-    <Compile Include="Models\items_history.cs" />
+    <Compile Include="Models\Items.cs" />
+    <Compile Include="Models\Items_history.cs" />
     <Compile Include="Models\Laptops.cs" />
-    <Compile Include="Models\location.cs" />
-    <Compile Include="Models\location_history.cs" />
-    <Compile Include="Models\members_history.cs" />
+    <Compile Include="Models\Location.cs" />
+    <Compile Include="Models\Location_history.cs" />
+    <Compile Include="Models\Members_history.cs" />
     <Compile Include="Models\SpareParts.cs" />
-    <Compile Include="Models\teams.cs" />
-    <Compile Include="Models\t_members.cs" />
-    <Compile Include="Models\users.cs" />
+    <Compile Include="Models\Teams.cs" />
+    <Compile Include="Models\T_members.cs" />
+    <Compile Include="Models\Users.cs" />
     <Compile Include="Models\Vehicles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

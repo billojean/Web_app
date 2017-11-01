@@ -6,12 +6,12 @@ using System.Web;
 
 namespace WebApplication1.Models
 {
-    public class teams
+    public class Teams
     {
-        public string title { get; set; }
+        public string Title { get; set; }
         [Key]
-        public string pin { get; set; }
-        public string creator { get; set; }
-        public string visibility { get; set; }
+        public string Pin { get; set; }
+        public string Creator { get; set; }
+        public string Visibility { get; set; }
     }
 }

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using WebApplication1.DBA;
@@ -15,19 +11,19 @@ namespace WebApplication1.Controllers
 {
     public class SparePartsController : ApiController
     {
-        private DataContext db = new DataContext();
+        private CoTeamsRepository db = new CoTeamsRepository();
 
         // GET: api/SpareParts
         public IQueryable<SpareParts> Getspareparts()
         {
-            return db.spareparts;
+            return db.Spareparts;
         }
 
         // GET: api/SpareParts/5
         [ResponseType(typeof(SpareParts))]
         public IHttpActionResult GetSpareParts(string id)
         {
-            SpareParts spareparts = db.spareparts.Find(id);
+            SpareParts spareparts = db.Spareparts.Find(id);
             if (spareparts == null)
             {
                 return NotFound();
@@ -80,7 +76,7 @@ namespace WebApplication1.Controllers
                 return BadRequest(ModelState);
             }
 
-            db.spareparts.Add(spareparts);
+            db.Spareparts.Add(spareparts);
 
             try
             {
@@ -105,13 +101,13 @@ namespace WebApplication1.Controllers
         [ResponseType(typeof(SpareParts))]
         public IHttpActionResult DeleteSpareParts(string id)
         {
-            SpareParts spareparts = db.spareparts.Find(id);
+            SpareParts spareparts = db.Spareparts.Find(id);
             if (spareparts == null)
             {
                 return NotFound();
             }
 
-            db.spareparts.Remove(spareparts);
+            db.Spareparts.Remove(spareparts);
             db.SaveChanges();
 
             return Ok(spareparts);
@@ -128,7 +124,7 @@ namespace WebApplication1.Controllers
 
         private bool SparePartsExists(string id)
         {
-            return db.spareparts.Count(e => e.Id == id) > 0;
+            return db.Spareparts.Count(e => e.Id == id) > 0;
         }
     }
 }

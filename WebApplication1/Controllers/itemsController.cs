@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using WebApplication1.DBA;
@@ -13,21 +9,22 @@ using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
-    public class itemsController : ApiController
+    public class ItemsController : ApiController    
     {
-        private DataContext db = new DataContext();
+        private CoTeamsRepository db = new CoTeamsRepository();
 
         // GET: api/items
-        public IQueryable<items> Getitems(string user)
+        public IQueryable<Items> Getitems(string user)
         {
-            return db.Items.Where(u => u.item_owner == user);
+
+            return db.GetUserItems(user);
         }
 
         // GET: api/items/5
-        [ResponseType(typeof(items))]
+        [ResponseType(typeof(Items))]
         public IHttpActionResult Getitem(string id)
         {
-            items item = db.Items.Find(id);
+            Items item = db.Items.Find(id);
             if (item == null)
             {
                 return NotFound();
@@ -50,14 +47,14 @@ namespace WebApplication1.Controllers
         }
         // PUT: api/items/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult Putitem(string id, items item)
+        public IHttpActionResult Putitem(string id, Items item)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != item.item_id)
+            if (id != item.Item_id)
             {
                 return BadRequest();
             }
@@ -70,7 +67,7 @@ namespace WebApplication1.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!itemExists(id))
+                if (!ItemExists(id))
                 {
                     return NotFound();
                 }
@@ -84,8 +81,8 @@ namespace WebApplication1.Controllers
         }
 
         // POST: api/items
-        [ResponseType(typeof(items))]
-        public IHttpActionResult Postitem(items item)
+        [ResponseType(typeof(Items))]
+        public IHttpActionResult Postitem(Items item)
         {
             if (!ModelState.IsValid)
             {
@@ -100,7 +97,7 @@ namespace WebApplication1.Controllers
             }
             catch (DbUpdateException)
             {
-                if (itemExists(item.item_id))
+                if (ItemExists(item.Item_id))
                 {
                     return Content(HttpStatusCode.Conflict, "ID Already Exists!");
                 }
@@ -110,63 +107,28 @@ namespace WebApplication1.Controllers
                 }
             }
 
-            items_history items_history = new items_history
-            {
-                item_owner = item.item_owner,
-                item_id = item.item_id,
-                item_kind = item.item_kind,
-                datetime_taken = DateTime.Now,
-                datetime_return = null
-            };
-            if (itemExistsInHistory(item.item_id))
-            {
-                db.items_history.Attach(items_history);
-                var entry = db.Entry(items_history);
-                entry.Property(e => e.datetime_taken).IsModified = true;
-                entry.Property(e => e.item_kind).IsModified = true;
-                entry.Property(e => e.item_owner).IsModified = true;
-                entry.Property(e => e.datetime_return).IsModified = true;
-
-
-            }
-            else
-            {
-                db.items_history.Add(items_history);
-
-            }
+            db.InsertItemHistory(item);
 
             db.SaveChanges();
-            return CreatedAtRoute("DefaultApi", new { id = item.item_id }, item);
+            return CreatedAtRoute("DefaultApi", new { id = item.Item_id }, item);
         }
 
         // DELETE: api/items/5
 
-        // [ResponseType(typeof(items))]
         [HttpDelete]
         public IHttpActionResult Returnitem(string id)
         {
-            items item = db.Items.Find(id);
+            Items item = db.Items.Find(id);
             if (item == null)
             {
                 return NotFound();
             }
 
             db.Items.Remove(item);
+
+            db.ReturnInItemHistory(item);
+
             db.SaveChanges();
-
-            items_history items_history = new items_history
-            {
-
-                item_owner = item.item_owner,
-                item_id = item.item_id,
-                item_kind = item.item_kind,
-                datetime_return = DateTime.Now
-            };
-            db.items_history.Attach(items_history);
-            var entry = db.Entry(items_history);
-            entry.Property(e => e.datetime_return).IsModified = true;
-            db.SaveChanges();
-
 
             return Ok(item);
         }
@@ -181,13 +143,10 @@ namespace WebApplication1.Controllers
             base.Dispose(disposing);
         }
 
-        private bool itemExists(string id)
+        private bool ItemExists(string id)
         {
-            return db.Items.Count(e => e.item_id == id) > 0;
+            return db.Items.Count(e => e.Item_id == id) > 0;
         }
-        private bool itemExistsInHistory(string id)
-        {
-            return db.items_history.Count(e => e.item_id == id) > 0;
-        }
+       
     }
 }

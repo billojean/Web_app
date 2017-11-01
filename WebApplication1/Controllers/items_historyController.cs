@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using WebApplication1.DBA;
@@ -13,21 +9,21 @@ using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
-    public class items_historyController : ApiController
-    {
-        private DataContext db = new DataContext();
+    public class Items_historyController : ApiController
+    {   
+        private CoTeamsRepository db = new CoTeamsRepository();
 
         // GET: api/items_history
-        public IQueryable<items_history> Getitems_history()
+        public IQueryable<Items_history> Getitems_history()
         {
-            return db.items_history;
+            return db.Items_history;
         }
 
         // GET: api/items_history/5
-        [ResponseType(typeof(items_history))]
+        [ResponseType(typeof(Items_history))]
         public IHttpActionResult Getitems_history(string id)
         {
-            items_history items_history = db.items_history.Find(id);
+            Items_history items_history = db.Items_history.Find(id);
             if (items_history == null)
             {
                 return NotFound();
@@ -38,14 +34,14 @@ namespace WebApplication1.Controllers
 
         // PUT: api/items_history/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult Putitems_history(string id, items_history items_history)
+        public IHttpActionResult Putitems_history(string id, Items_history items_history)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != items_history.item_id)
+            if (id != items_history.Item_id)
             {
                 return BadRequest();
             }
@@ -58,7 +54,7 @@ namespace WebApplication1.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!items_historyExists(id))
+                if (!Items_historyExists(id))
                 {
                     return NotFound();
                 }
@@ -72,15 +68,15 @@ namespace WebApplication1.Controllers
         }
 
         // POST: api/items_history
-        [ResponseType(typeof(items_history))]
-        public IHttpActionResult Postitems_history(items_history items_history)
+        [ResponseType(typeof(Items_history))]
+        public IHttpActionResult Postitems_history(Items_history items_history)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.items_history.Add(items_history);
+            db.Items_history.Add(items_history);
 
             try
             {
@@ -88,7 +84,7 @@ namespace WebApplication1.Controllers
             }
             catch (DbUpdateException)
             {
-                if (items_historyExists(items_history.item_id))
+                if (Items_historyExists(items_history.Item_id))
                 {
                     return Conflict();
                 }
@@ -98,20 +94,20 @@ namespace WebApplication1.Controllers
                 }
             }
 
-            return CreatedAtRoute("DefaultApi", new { id = items_history.item_id }, items_history);
+            return CreatedAtRoute("DefaultApi", new { id = items_history.Item_id }, items_history);
         }
 
         // DELETE: api/items_history/5
-        [ResponseType(typeof(items_history))]
+        [ResponseType(typeof(Items_history))]
         public IHttpActionResult Deleteitems_history(string id)
         {
-            items_history items_history = db.items_history.Find(id);
+            Items_history items_history = db.Items_history.Find(id);
             if (items_history == null)
             {
                 return NotFound();
             }
 
-            db.items_history.Remove(items_history);
+            db.Items_history.Remove(items_history);
             db.SaveChanges();
 
             return Ok(items_history);
@@ -126,9 +122,9 @@ namespace WebApplication1.Controllers
             base.Dispose(disposing);
         }
 
-        private bool items_historyExists(string id)
+        private bool Items_historyExists(string id)
         {
-            return db.items_history.Count(e => e.item_id == id) > 0;
+            return db.Items_history.Count(e => e.Item_id == id) > 0;
         }
     }
 }

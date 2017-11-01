@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using WebApplication1.DBA;
@@ -13,27 +10,25 @@ using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
-    public class location_historyController : ApiController
+    public class Location_historyController : ApiController
     {
-        private DataContext db = new DataContext();
+        private CoTeamsRepository db = new CoTeamsRepository();
 
         // GET: api/location_history
-        public IQueryable<location_history> Getlocation_history()
+        public IQueryable<Location_history> Getlocation_history()
         {
             return db.Location_history;
         }
 
-        public IQueryable<location_history> GetLocationHistory(string title, double time)
+        public IQueryable<Location_history> GetLocationHistory(string title, double time)
         {
-            DateTime datetime1 = DateTime.Now.AddMinutes(-time);
-            DateTime datetime2 = DateTime.Now;
-            return db.Location_history.Where(a => a.t_title.Equals(title) && a.datetime >= datetime1 && a.datetime <= datetime2);
+            return db.GetPreviousLocations(title, time);
         }
         // GET: api/location_history/5
-        [ResponseType(typeof(location_history))]
+        [ResponseType(typeof(Location_history))]
         public IHttpActionResult Getlocation_history(string id)
         {
-            location_history location_history = db.Location_history.Find(id);
+            Location_history location_history = db.Location_history.Find(id);
             if (location_history == null)
             {
                 return NotFound();
@@ -44,7 +39,7 @@ namespace WebApplication1.Controllers
 
         // PUT: api/location_history/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult Putlocation_history(int id, location_history location_history)
+        public IHttpActionResult Putlocation_history(int id, Location_history location_history)
         {
             if (!ModelState.IsValid)
             {
@@ -64,7 +59,7 @@ namespace WebApplication1.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!location_historyExists(id))
+                if (!Location_historyExists(id))
                 {
                     return NotFound();
                 }
@@ -78,8 +73,8 @@ namespace WebApplication1.Controllers
         }
 
         // POST: api/location_history
-        [ResponseType(typeof(location_history))]
-        public IHttpActionResult PostLocalLocation(List<location_history> location_history)
+        [ResponseType(typeof(Location_history))]
+        public IHttpActionResult PostLocalLocation(List<Location_history> location_history)
         {
             if (!ModelState.IsValid)
             {
@@ -99,10 +94,10 @@ namespace WebApplication1.Controllers
 
 
         // DELETE: api/location_history/5
-        [ResponseType(typeof(location_history))]
+        [ResponseType(typeof(Location_history))]
         public IHttpActionResult Deletelocation_history(string id)
         {
-            location_history location_history = db.Location_history.Find(id);
+            Location_history location_history = db.Location_history.Find(id);
             if (location_history == null)
             {
                 return NotFound();
@@ -123,7 +118,7 @@ namespace WebApplication1.Controllers
             base.Dispose(disposing);
         }
 
-        private bool location_historyExists(int id)
+        private bool Location_historyExists(int id)
         {
             return db.Location_history.Count(e => e.Id == id) > 0;
         }

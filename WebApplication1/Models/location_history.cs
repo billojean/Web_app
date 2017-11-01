@@ -6,14 +6,14 @@ using System.Web;
 
 namespace WebApplication1.Models
 {
-    public class location_history
+    public class Location_history
     {
         [Key]
         public int Id { get; set; }
-        public string username { get; set; }
-        public string t_title { get; set; }
-        public double latitude { get; set; }
-        public double longitude { get; set; }
-        public DateTime? datetime { get; set; }
+        public string Username { get; set; }
+        public string T_title { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public DateTime? Datetime { get; set; }
     }
 }

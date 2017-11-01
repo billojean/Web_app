@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace WebApplication1.Models
 {
-    public  class items
+    public  class Items
     {
         [Key]
-        public string item_id { get; set; }
-        public string item_owner { get; set; }
-        public string item_kind { get; set; }
+        public string Item_id { get; set; }
+        public string Item_owner { get; set; }
+        public string Item_kind { get; set; }
     }
 }

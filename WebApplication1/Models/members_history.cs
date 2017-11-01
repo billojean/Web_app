@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace WebApplication1.Models
 {
-    public class members_history
+    public class Members_history
     {
         [Key]
         public int Id { get; set; }
-        public string t_member { get; set; }
-        public string t_pin { get; set; }
-        public string t_title { get; set; }
-        public string t_identity { get; set; }
-        public DateTime? datetime_enter { get; set; }
-        public DateTime? datetime_leave { get; set; }
+        public string T_member { get; set; }
+        public string T_pin { get; set; }
+        public string T_title{ get; set; }
+        public string T_identity { get; set; }
+        public DateTime? Datetime_enter { get; set; }
+        public DateTime? Datetime_leave { get; set; }
     }
 }

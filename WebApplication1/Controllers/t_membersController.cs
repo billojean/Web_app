@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using WebApplication1.DBA;
@@ -13,12 +9,12 @@ using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
-    public class t_membersController : ApiController
+    public class T_membersController : ApiController
     {
-        private DataContext db = new DataContext();
+        private CoTeamsRepository db = new CoTeamsRepository();
 
         // GET: api/t_members
-        public IQueryable<t_members> Gett_members()
+        public IQueryable<T_members> Gett_members()
         {
             return db.T_members;
         }
@@ -36,10 +32,10 @@ namespace WebApplication1.Controllers
             return Ok(member);
         }
         // GET: api/t_members/5
-        [ResponseType(typeof(t_members))]
+        [ResponseType(typeof(T_members))]
         public IHttpActionResult Get_member(string user)
         {
-            t_members t_members = db.T_members.Find(user);
+            var t_members = db.T_members.Find(user);    
             if (t_members == null)
             {
                 return NotFound();
@@ -51,14 +47,14 @@ namespace WebApplication1.Controllers
 
         // PUT: api/t_members/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult Putt_members(string id, t_members t_members)
+        public IHttpActionResult Putt_members(string id, T_members t_members)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != t_members.t_member)
+            if (id != t_members.T_member)
             {
                 return BadRequest();
             }
@@ -71,7 +67,7 @@ namespace WebApplication1.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!t_membersExists(id))
+                if (!T_membersExists(id))
                 {
                     return NotFound();
                 }
@@ -85,8 +81,8 @@ namespace WebApplication1.Controllers
         }
 
         // POST: api/t_members
-        [ResponseType(typeof(t_members))]
-        public IHttpActionResult Post_member(t_members t_members)
+        [ResponseType(typeof(T_members))]
+        public IHttpActionResult Post_member(T_members t_members)
         {
             if (!ModelState.IsValid)
             {
@@ -101,7 +97,7 @@ namespace WebApplication1.Controllers
             }
             catch (DbUpdateException)
             {
-                if (t_membersExists(t_members.t_member))
+                if (T_membersExists(t_members.T_member))
                 {
                     return Content(HttpStatusCode.Conflict, "You are Already in a Team!");
                 }
@@ -110,26 +106,18 @@ namespace WebApplication1.Controllers
                     throw;
                 }
             }
-            members_history members_history = new members_history
-            {
-                t_member = t_members.t_member,
-                t_title = t_members.t_title,
-                t_pin = t_members.t_pin,
-                t_identity = "member",
-                datetime_enter = DateTime.Now
-            };
+            db.AddMemberHistory(t_members);
 
-            db.members_history.Add(members_history);
             db.SaveChanges();
 
-            return CreatedAtRoute("DefaultApi", new { id = t_members.t_member }, t_members);
+            return CreatedAtRoute("DefaultApi", new { id = t_members.T_member }, t_members);
         }
 
         // DELETE: api/t_members/5
-        [ResponseType(typeof(t_members))]
+        [ResponseType(typeof(T_members))]
         public IHttpActionResult Delete(string id)
         {
-            t_members t_members = db.T_members.Find(id);
+            T_members t_members = db.T_members.Find(id);
             if (t_members == null)
             {
                 return NotFound();
@@ -140,7 +128,7 @@ namespace WebApplication1.Controllers
 
             return Ok(t_members);
         }
-        [ResponseType(typeof(t_members))]
+        [ResponseType(typeof(T_members))]
 
 
         protected override void Dispose(bool disposing)
@@ -152,9 +140,9 @@ namespace WebApplication1.Controllers
             base.Dispose(disposing);
         }
 
-        private bool t_membersExists(string id)
+        private bool T_membersExists(string id)
         {
-            return db.T_members.Count(e => e.t_member == id) > 0;
+            return db.T_members.Count(e => e.T_member == id) > 0;
         }
     }
 }

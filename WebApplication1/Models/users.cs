@@ -8,9 +8,9 @@ using System.Web.Mvc;
 
 namespace WebApplication1.Models
 {
-    public class users
+    public class Users
     {
-        public users()
+        public Users()
         {
            
         }
@@ -29,7 +29,7 @@ namespace WebApplication1.Models
         public byte[] Pic { get; set; }
         public int? DId { get; set; }
         [JsonIgnore]
-        public virtual ICollection<location> location { get; set; }
+        public virtual ICollection<Location> Location { get; set; }
         [JsonIgnore]
         public virtual Departments Departments { get; set; }       
     }

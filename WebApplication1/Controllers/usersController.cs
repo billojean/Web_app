@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
-using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -15,9 +12,9 @@ using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
-    public class usersController : Controller
+    public class UsersController : Controller
     {
-        private DataContext db = new DataContext();
+        private DataContext db = new DataContext(); 
 
         // GET: users
         [Authorize]
@@ -35,7 +32,7 @@ namespace WebApplication1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            users users = db.Users.Find(id);
+            Users users = db.Users.Find(id);
             if (users == null)
             {
                 return HttpNotFound();
@@ -47,7 +44,7 @@ namespace WebApplication1.Controllers
         [Authorize]
         public ActionResult Create()
         {
-            ViewBag.DId = new SelectList(db.departments, "DId", "Department");
+            ViewBag.DId = new SelectList(db.Departments, "DId", "Department");
             return View();
         }
 
@@ -59,7 +56,7 @@ namespace WebApplication1.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public ActionResult Create([Bind(Include = "Id,FirstName,LastName,UserName,PassWord,Email,OfficePhone,MobilePhone,DId", Exclude = "Pic")] users users)
+        public ActionResult Create([Bind(Include = "Id,FirstName,LastName,UserName,PassWord,Email,OfficePhone,MobilePhone,DId", Exclude = "Pic")] Users users)
         {
             if (ModelState.IsValid)
             {
@@ -81,7 +78,7 @@ namespace WebApplication1.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.DId = new SelectList(db.departments, "DId", "Department", users.DId);
+            ViewBag.DId = new SelectList(db.Departments, "DId", "Department", users.DId);
             return View(users);
         }
 
@@ -94,13 +91,13 @@ namespace WebApplication1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            users users = db.Users.Find(id);
+            Users users = db.Users.Find(id);
             users.PassWord = null;
             if (users == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.DId = new SelectList(db.departments, "DId", "Department", users.DId);
+            ViewBag.DId = new SelectList(db.Departments, "DId", "Department", users.DId);
             return View(users);
         }
 
@@ -110,7 +107,7 @@ namespace WebApplication1.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public ActionResult Edit([Bind(Include = "Id,FirstName,LastName,UserName,PassWord,Email,OfficePhone,MobilePhone,DId", Exclude = "Pic")] users users)
+        public ActionResult Edit([Bind(Include = "Id,FirstName,LastName,UserName,PassWord,Email,OfficePhone,MobilePhone,DId", Exclude = "Pic")] Users users)
         {
             if (ModelState.IsValid)
             {
@@ -125,13 +122,13 @@ namespace WebApplication1.Controllers
                     }
 
                 }if (users.PassWord != null)
-                { users.PassWord = Encrypt(users.PassWord); }
-                users.Pic = imageData;
+                { users.PassWord = Encrypt(users.PassWord); }              
+                 users.Pic = imageData; 
                 db.Entry(users).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.DId = new SelectList(db.departments, "DId", "Department", users.DId);
+            ViewBag.DId = new SelectList(db.Departments, "DId", "Department", users.DId);
             return View(users);
         }
 
@@ -143,7 +140,7 @@ namespace WebApplication1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            users users = db.Users.Find(id);
+            Users users = db.Users.Find(id);
             if (users == null)
             {
                 return HttpNotFound();
@@ -157,7 +154,7 @@ namespace WebApplication1.Controllers
         [Authorize]
         public ActionResult DeleteConfirmed(int id)
         {
-            users users = db.Users.Find(id);
+            Users users = db.Users.Find(id);
             db.Users.Remove(users);
             db.SaveChanges();
             return RedirectToAction("Index");

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using WebApplication1.DBA;
@@ -15,19 +11,19 @@ namespace WebApplication1.Controllers
 {
     public class VehiclesController : ApiController
     {
-        private DataContext db = new DataContext();
+        private CoTeamsRepository db = new CoTeamsRepository();
 
         // GET: api/Vehicles
         public IQueryable<Vehicles> Getvehicles()
         {
-            return db.vehicles;
+            return db.Vehicles;
         }
 
         // GET: api/Vehicles/5
         [ResponseType(typeof(Vehicles))]
         public IHttpActionResult GetVehicles(string id)
         {
-            Vehicles vehicles = db.vehicles.Find(id);
+            Vehicles vehicles = db.Vehicles.Find(id);
             if (vehicles == null)
             {
                 return NotFound();
@@ -80,7 +76,7 @@ namespace WebApplication1.Controllers
                 return BadRequest(ModelState);
             }
 
-            db.vehicles.Add(vehicles);
+            db.Vehicles.Add(vehicles);
 
             try
             {
@@ -105,13 +101,13 @@ namespace WebApplication1.Controllers
         [ResponseType(typeof(Vehicles))]
         public IHttpActionResult DeleteVehicles(string id)
         {
-            Vehicles vehicles = db.vehicles.Find(id);
+            Vehicles vehicles = db.Vehicles.Find(id);
             if (vehicles == null)
             {
                 return NotFound();
             }
 
-            db.vehicles.Remove(vehicles);
+            db.Vehicles.Remove(vehicles);
             db.SaveChanges();
 
             return Ok(vehicles);
@@ -128,7 +124,7 @@ namespace WebApplication1.Controllers
 
         private bool VehiclesExists(string id)
         {
-            return db.vehicles.Count(e => e.Id == id) > 0;
+            return db.Vehicles.Count(e => e.Id == id) > 0;
         }
     }
 }

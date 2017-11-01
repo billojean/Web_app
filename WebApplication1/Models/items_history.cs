@@ -6,13 +6,13 @@ using System.Web;
 
 namespace WebApplication1.Models
 {
-    public class items_history
+    public class Items_history
     {
-        public string item_owner { get; set; }
+        public string Item_owner { get; set; }
         [Key]
-        public string item_id { get; set; }
-        public string item_kind { get; set; }
-        public DateTime? datetime_taken { get; set; }
-        public DateTime? datetime_return { get; set; }
+        public string Item_id { get; set; }
+        public string Item_kind { get; set; }
+        public DateTime? Datetime_taken { get; set; }
+        public DateTime? Datetime_return { get; set; }
     }
 }

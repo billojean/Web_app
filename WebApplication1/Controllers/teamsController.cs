@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using WebApplication1.DBA;
@@ -13,26 +9,26 @@ using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
-    public class teamsController : ApiController
+    public class TeamsController : ApiController    
     {
-        private DataContext db = new DataContext();
+        private CoTeamsRepository db = new CoTeamsRepository();
 
         // GET: api/teams
      
-        public IQueryable<teams> Getteams()
+        public IQueryable<Teams> Getteams()
         {
-            return db.Teams.Where(u => u.visibility == "true");
+            return db.GetInvisibleTeams();
         }
-        public IQueryable<teams> GetAllteams()
+        public IQueryable<Teams> GetAllteams()
         {
-            return db.Teams.OrderBy(a => a.title);
+            return db.GetAllTeams();
         }
 
-        [ResponseType(typeof(teams))]
+        [ResponseType(typeof(Teams))]
         public IHttpActionResult Getteam(string id)
         {
 
-            var query = db.FindInvTeams(id);
+            var query = db.FindInvisibleTeams(id);  
             if (query == null)
             {
                 return Content(HttpStatusCode.NotFound, "Incorrect PIN!");
@@ -45,14 +41,14 @@ namespace WebApplication1.Controllers
 
         // PUT: api/teams/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult Putteam(string id, teams team)
+        public IHttpActionResult Putteam(string id, Teams team)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != team.pin)
+            if (id != team.Pin)
             {
                 return BadRequest();
             }
@@ -65,7 +61,7 @@ namespace WebApplication1.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!teamExists(id))
+                if (!TeamExists(id))
                 {
                     return NotFound();
                 }
@@ -78,8 +74,8 @@ namespace WebApplication1.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
         // POST: api/teams
-        [ResponseType(typeof(teams))]
-        public IHttpActionResult Postteam(teams team)
+        [ResponseType(typeof(Teams))]
+        public IHttpActionResult Postteam(Teams team)
         {
             if (!ModelState.IsValid)
             {
@@ -89,14 +85,14 @@ namespace WebApplication1.Controllers
             try
             {
 
-                if (!db.InTeam(team) && !db.titleExists(team))
+                if (!db.IsCreator(team.Creator) && !db.TitleExists(team))
                 {
                     db.SaveChanges();
                 }
 
                 else
                 {
-                    if (db.InTeam(team))
+                    if (db.IsCreator(team.Creator))
                     { return Content(HttpStatusCode.Conflict, "You are Already in a Team!"); }
 
                     return Content(HttpStatusCode.Conflict, "Title Already Exists");
@@ -104,7 +100,7 @@ namespace WebApplication1.Controllers
             }
             catch (DbUpdateException)
             {
-                if (teamExists(team.pin))
+                if (TeamExists(team.Pin))
                 {
                     return Content(HttpStatusCode.Conflict, "PIN Already Exists!");
                 }
@@ -115,65 +111,31 @@ namespace WebApplication1.Controllers
             }
 
 
-
-            t_members t_members = new t_members
-            {
-                t_member = team.creator,
-                t_title = team.title,
-                t_pin = team.pin,
-                t_identity = "creator"
-
-            };
-            members_history members_history = new members_history
-            {
-                t_member = team.creator,
-                t_title = team.title,
-                t_pin = team.pin,
-                t_identity = "creator",
-                datetime_enter = DateTime.Now
-            };
-
-            db.T_members.Add(t_members);
-            db.members_history.Add(members_history);
+            db.InsertMember(team);
             db.SaveChanges();
 
-            return CreatedAtRoute("DefaultApi", new { id = team.pin }, team);
+            return CreatedAtRoute("DefaultApi", new { id = team.Pin }, team);
         }
 
 
         [HttpDelete]
         public IHttpActionResult DeleteFromTeam(string user)
         {
-            var query = db.Teams.SingleOrDefault(u => u.creator == user);
 
-            t_members t_member = db.T_members.Find(user);
+            var t_member = db.T_members.Find(user);
 
             if (t_member == null)
             {
                 return NotFound();
             }
-            if (query == null)
+            if (!db.IsCreator(user))
 
             {
-                db.T_members.Remove(t_member);
-
-                members_history result = (from p in db.members_history
-                                          where p.t_member == user && p.datetime_leave == null
-                                          select p).SingleOrDefault();
-
-                result.datetime_leave = DateTime.Now;
-
+                db.DeleteMember(user, t_member);
             }
             else
             {
-                var pin = query.pin;
-                db.Teams.RemoveRange(db.Teams.Where(u => u.pin == pin));
-                db.T_members.RemoveRange(db.T_members.Where(u => u.t_pin == pin));
-
-                (from p in db.members_history
-                 where p.t_pin == pin && p.datetime_leave == null
-                 select p).ToList().ForEach(x => x.datetime_leave = DateTime.Now);
-
+                db.DeleteAssociateMembers(user);
             }
 
             db.SaveChanges();
@@ -190,9 +152,9 @@ namespace WebApplication1.Controllers
             base.Dispose(disposing);
         }
 
-        private bool teamExists(string id)
+        private bool TeamExists(string id)
         {
-            return db.Teams.Count(e => e.pin == id) > 0;
+            return db.Teams.Count(e => e.Pin == id) > 0;
         }
     }
 }

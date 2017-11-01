@@ -10,11 +10,11 @@ namespace WebApplication1.Models
     {
         public Departments()
         {
-            users = new HashSet<users>();
+            Users = new HashSet<Users>();
         }
         [Key]
         public int DId { get; set; }
         public string Department { get; set; }
-        public virtual ICollection<users> users { get; set; }
+        public virtual ICollection<Users> Users { get; set; }
     }
 }

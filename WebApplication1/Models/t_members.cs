@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace WebApplication1.Models
 {
-    public class t_members
+    public class T_members
     {
         [Key]
-        public string t_member { get; set; }
-        public string t_pin { get; set; }
-        public string t_title { get; set; }
-        public string t_identity { get; set; }
+        public string T_member { get; set; }
+        public string T_pin { get; set; }
+        public string T_title { get; set; }
+        public string T_identity { get; set; }
     }
 }

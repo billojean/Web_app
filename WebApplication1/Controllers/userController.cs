@@ -1,48 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Security.Cryptography;
 using System.Web.Http;
 using System.Web.Http.Description;
-using System.Web.Security;
 using WebApplication1.DBA;
 using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
-    public class userController : ApiController
+    public class UserController : ApiController 
     {
-        private DataContext db = new DataContext();
+        private CoTeamsRepository db = new CoTeamsRepository();
 
         // GET: api/user
-        public IQueryable<users> Getusers()
+        public IQueryable<Users> Getusers()
         {
             return db.Users;
         }
         [HttpGet]
         public IHttpActionResult GetMembers(string user)
         {
-            var query = db.FindTmember(user);
+            var member = db.FindTmember(user);
 
-            if (query.Count() == 0)
+            if (member.Count() == 0)
 
-            { return Ok(query); }//empty list
+            { return Ok(member); }//empty list
 
-            string pin = query.First().t_pin;
-
-
-
-            var join = from t1 in db.T_members
-                       join t2 in db.Users on t1.t_member equals t2.UserName
-                       where t1.t_pin == pin join t3 in db.departments on t2.DId equals t3.DId
-                       orderby t1.t_identity
-                       select new { t2.FirstName, t2.LastName, t1.t_title, t1.t_member, t1.t_identity, t2.Email, t2.OfficePhone, t2.MobilePhone,t3.Department, t2.Pic };
-
+            var join = db.GetTeamMembersInfo(member);
 
             return Ok(join);
         }
@@ -69,7 +56,7 @@ namespace WebApplication1.Controllers
         // PUT: api/users/5
 
         [ResponseType(typeof(void))]
-        public IHttpActionResult Putuser(int id, users user)
+        public IHttpActionResult Putuser(int id, Users user)
         {
             if (!ModelState.IsValid)
             {
@@ -89,7 +76,7 @@ namespace WebApplication1.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!userExists(id))
+                if (!UserExists(id))
                 {
                     return NotFound();
                 }
@@ -104,24 +91,13 @@ namespace WebApplication1.Controllers
 
       
         [HttpPost]
-        public IHttpActionResult Login(users user)
+        public IHttpActionResult Login(Users user)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            /* var usr = db.FindUserByPasswd(user);
-
-             if (usr == null)
-             {
-                 return NotFound();
-             }
-             else
-             {
-
-                 return Ok(usr);
-             }*/
+            
             var usr = db.Users.SingleOrDefault(u => u.UserName == user.UserName);
             if (user != null)
             {
@@ -152,10 +128,10 @@ namespace WebApplication1.Controllers
         }
 
         // DELETE: api/users/5
-        [ResponseType(typeof(users))]
+        [ResponseType(typeof(Users))]
         public IHttpActionResult Deleteuser(int id)
         {
-            users user = db.Users.Find(id);
+            Users user = db.Users.Find(id);
             if (user == null)
             {
                 return NotFound();
@@ -176,7 +152,7 @@ namespace WebApplication1.Controllers
             base.Dispose(disposing);
         }
 
-        private bool userExists(int id)
+        private bool UserExists(int id)
         {
             return db.Users.Count(e => e.Id == id) > 0;
         }

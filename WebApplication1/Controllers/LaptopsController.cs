@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using WebApplication1.DBA;
@@ -15,19 +11,19 @@ namespace WebApplication1.Controllers
 {
     public class LaptopsController : ApiController
     {
-        private DataContext db = new DataContext();
+        private CoTeamsRepository db = new CoTeamsRepository();
 
         // GET: api/Laptops
         public IQueryable<Laptops> Getlaptops()
         {
-            return db.laptops;
+            return db.Laptops;
         }
 
         // GET: api/Laptops/5
         [ResponseType(typeof(Laptops))]
         public IHttpActionResult GetLaptops(string id)
         {
-            Laptops laptops = db.laptops.Find(id);
+            Laptops laptops = db.Laptops.Find(id);
             if (laptops == null)
             {
                 return NotFound();
@@ -80,7 +76,7 @@ namespace WebApplication1.Controllers
                 return BadRequest(ModelState);
             }
 
-            db.laptops.Add(laptops);
+            db.Laptops.Add(laptops);
 
             try
             {
@@ -105,13 +101,13 @@ namespace WebApplication1.Controllers
         [ResponseType(typeof(Laptops))]
         public IHttpActionResult DeleteLaptops(string id)
         {
-            Laptops laptops = db.laptops.Find(id);
+            Laptops laptops = db.Laptops.Find(id);
             if (laptops == null)
             {
                 return NotFound();
             }
 
-            db.laptops.Remove(laptops);
+            db.Laptops.Remove(laptops);
             db.SaveChanges();
 
             return Ok(laptops);
@@ -128,7 +124,7 @@ namespace WebApplication1.Controllers
 
         private bool LaptopsExists(string id)
         {
-            return db.laptops.Count(e => e.Id == id) > 0;
+            return db.Laptops.Count(e => e.Id == id) > 0;
         }
     }
 }

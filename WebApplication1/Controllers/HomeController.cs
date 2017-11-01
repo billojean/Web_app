@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using WebApplication1.DBA;
-using WebApplication1.Models;
+﻿using System.Web.Mvc;
 
 namespace WebApplication1.Controllers
 {

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using WebApplication1.DBA;
@@ -13,21 +9,21 @@ using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
-    public class locationsController : ApiController
+    public class LocationsController : ApiController
     {
-        private DataContext db = new DataContext();
+        private CoTeamsRepository db = new CoTeamsRepository();
 
         // GET: api/locations
-        [ResponseType(typeof(location))]
+        [ResponseType(typeof(Location))]
         public IHttpActionResult Getlocations(string user)
         {
-            var query = db.FindMember(user);
-            if (query == null)
+            var member = db.FindMember(user);   
+            if (member == null)
             {
                 return NotFound();
             }
 
-            string title = query.t_title;
+            string title = member.T_title;  
 
             var getTeammembers = db.FindTeamMembers(user, title);
 
@@ -38,16 +34,16 @@ namespace WebApplication1.Controllers
             return Ok(getTeammembers);
         }
 
-        public IQueryable <location> GetTeamMembersLocation(string title)
-        {           
-            return db.Locations.Where(a => a.t_title.Equals(title));
+        public IQueryable <Location> GetTeamMembersLocation(string title)
+        {
+            return db.GetTeamLocations(title);    
         }
 
         // GET: api/locations/5
-        [ResponseType(typeof(location))]
+        [ResponseType(typeof(Location))]
         public IHttpActionResult Getlocation(string id)
         {
-            location location = db.Locations.Find(id);
+            Location location = db.Locations.Find(id);
             if (location == null)
             {
                 return NotFound();
@@ -58,14 +54,14 @@ namespace WebApplication1.Controllers
 
         // PUT: api/locations/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult Putlocation(string id, location location)
+        public IHttpActionResult Putlocation(string id, Location location)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != location.username)
+            if (id != location.Username)
             {
                 return BadRequest();
             }
@@ -78,7 +74,7 @@ namespace WebApplication1.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!locationExists(id))
+                if (!LocationExists(id))
                 {
                     return NotFound();
                 }
@@ -92,70 +88,24 @@ namespace WebApplication1.Controllers
         }
 
         // POST: api/locations
-        [ResponseType(typeof(location))]
-        public IHttpActionResult Postlocation(location location)
+        [ResponseType(typeof(Location))]
+        public IHttpActionResult Postlocation(Location location)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
 
             }
+            db.AddLocation(location);
 
-            var query = db.FindUserOnLocations(location);
-            var query2 = db.FindUserId(location);
-            if (query == null)
-            {
-                location.t_title = "";
-            }
-            else
-            {
-                string title = query.t_title;
-
-                location.t_title = title.Trim();
-            }
-            location.UId = query2.Id;
-            db.Locations.Add(location);
-
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                if (locationExists(location.username))
-                {
-                    db.Locations.Attach(location);
-                    var entry = db.Entry(location);
-                    entry.Property(e => e.UId).IsModified = true;
-                    entry.Property(e => e.t_title).IsModified = true;
-                    entry.Property(e => e.latitude).IsModified = true;
-                    entry.Property(e => e.longitude).IsModified = true;
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            location_history location_history = new location_history
-            {
-                username = location.username,
-                t_title = location.t_title,
-                latitude = location.latitude,
-                longitude = location.longitude,
-                datetime = DateTime.Now
-            };
-            db.Location_history.Add(location_history);
-            db.SaveChanges();
-
-            return CreatedAtRoute("DefaultApi", new { id = location.username }, location);
+            return CreatedAtRoute("DefaultApi", new { id = location.Username }, location);
         }
 
         // DELETE: api/locations/5
-        [ResponseType(typeof(location))]
+        [ResponseType(typeof(Location))]
         public IHttpActionResult Deletelocation(string id)
         {
-            location location = db.Locations.Find(id);
+            Location location = db.Locations.Find(id);
             if (location == null)
             {
                 return NotFound();
@@ -176,9 +126,9 @@ namespace WebApplication1.Controllers
             base.Dispose(disposing);
         }
 
-        private bool locationExists(string id)
+        private bool LocationExists(string id)
         {
-            return db.Locations.Count(e => e.username == id) > 0;
+            return db.Locations.Count(e => e.Username == id) > 0;
         }
     }
 }

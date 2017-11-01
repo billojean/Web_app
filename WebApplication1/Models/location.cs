@@ -9,17 +9,17 @@ using System.Threading.Tasks;
 
 namespace WebApplication1.Models
 {
-    public class location
+    public class Location
     {
         [Key]
-        public string username { get; set; }
-        public double latitude { get; set; }
-        public double longitude { get; set; }
-        public string t_title { get; set; }
+        public string Username { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public string T_title { get; set; }
         public int? UId { get; set; }
         [JsonIgnore]
         [ForeignKey("UId")]
-        public virtual users users { get; set; }
+        public virtual Users User { get; set; }
     }
 
 }
