@@ -4,3 +4,5 @@
 
 /.vs/config
 /.vs/WebApplication1/v15
+/WebApplication1/bin
+/WebApplication1/obj/Release

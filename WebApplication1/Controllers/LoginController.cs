@@ -7,7 +7,6 @@ namespace WebApplication1.Controllers
 {
     public class LoginController : Controller
     {
-        private CoTeamsRepository db = new CoTeamsRepository();
         // GET: Login
         public ActionResult Index()
         {

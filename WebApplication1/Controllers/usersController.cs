@@ -14,7 +14,13 @@ namespace WebApplication1.Controllers
 {
     public class UsersController : Controller
     {
-        private DataContext db = new DataContext(); 
+        private readonly DataContext db;
+
+        public UsersController()
+        {
+            this.db =new DataContext();
+        }
+       // private DataContext db = new DataContext(); 
 
         // GET: users
         [Authorize]
