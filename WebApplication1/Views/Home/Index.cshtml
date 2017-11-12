@@ -21,7 +21,7 @@
         </select>
         <div class="locations">
             <ul>
-                <li ng-repeat="t in teams" ng-class="{sel: t.Title == Title}" ng-click="ShowLocation(t.Title,mod);" ng-cloak>
+                <li ng-repeat="t in teams" ng-class="{sel: t.Title == title}" ng-click="ShowLocation(t.Title,mod);" ng-cloak>
                     <div> {{t.Title}}</div> 
                 </li>
                      
