@@ -10,10 +10,6 @@ namespace WebApplication1.Models
 {
     public class Users
     {
-        public Users()
-        {
-           
-        }
         [Key]
         public int Id { get; set; }        
         public string FirstName { get; set; }        
