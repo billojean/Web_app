@@ -184,6 +184,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711121811475_InitialCreate.cs" />
+    <Compile Include="Migrations\201711121811475_InitialCreate.Designer.cs">
+      <DependentUpon>201711121811475_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Departments.cs" />
     <Compile Include="Models\Items.cs" />
     <Compile Include="Models\Items_history.cs" />
@@ -271,7 +276,11 @@
     <Content Include="Views\users\Index.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201711121811475_InitialCreate.resx">
+      <DependentUpon>201711121811475_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
